@@ -27,11 +27,13 @@ def get_node_summary(node_data):
 def onReceive(packet, interface):  # called when a packet arrives
     try:
         sender = str(packet["fromId"])
-        received_text = packet["decoded"]["text"]
-
         node_data = get_node_summary(interface.nodes[sender])
 
-        if received_text:
+        text_message_present =  "decoded" in packet and "text" in packet["decoded"]
+
+        if text_message_present:
+            received_text = packet["decoded"]["text"]
+
             print(f"Received from {sender}: {received_text}")
 
             if packet['toId'] == '^all':
