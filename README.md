@@ -69,6 +69,21 @@ pip install -r requirement.txt
 - Modify the LLM model by updating the `chat` function in `chat_with_llm`.
 - Adjust chunk size or message length limits as needed.
 
+### Different Interface
+
+```python
+# Use this if your node is connected to your local network
+interface = meshtastic.tcp_interface.TCPInterface(hostname="meshtastic.local")
+
+# Use this if your node is on BLE
+# You can search for ble devices using BLE Scanner on your phone or using meshtastic cli
+# Find address using meshtastic cli: meshtastic --ble-scan
+interface = meshtastic.ble_interface.BLEClient(address="Your Node BLE Identifier")
+
+# Use this if your node is connected to your computer
+interface = meshtastic.serial_interface.SerialInterface() # add param devPath if you have multiple devices connected
+```
+
 ### Ollama
 
 If you use Ollama, please change the model name in chat.py to your installed model.

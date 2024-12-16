@@ -1,4 +1,5 @@
 import meshtastic
+import meshtastic.ble_interface
 import meshtastic.tcp_interface
 import meshtastic.serial_interface
 from pubsub import pub
@@ -60,8 +61,8 @@ def onReceive(packet, interface):  # called when a packet arrives
                     else:
                         interface.sendText(chunk, destinationId=sender, wantAck=True)
 
-    except:
-        pass
+    except Exception as e:
+        print(f"Error: {e}") # Prints error message
 
 def onConnection(interface, topic=pub.AUTO_TOPIC): # called when we (re)connect to the radio
     # defaults to broadcast, specify a destination ID if you wish
@@ -71,7 +72,13 @@ def onConnection(interface, topic=pub.AUTO_TOPIC): # called when we (re)connect 
 pub.subscribe(onReceive, "meshtastic.receive")
 pub.subscribe(onConnection, "meshtastic.connection.established")
 
+# Use this if your node is connected to your local network
 # interface = meshtastic.tcp_interface.TCPInterface(hostname="meshtastic.local")
+
+# Use this if your node is on BLE
+# interface = meshtastic.ble_interface.BLEClient(address="Your Node BLE Identifier")
+
+# Use this if your node is connected to your computer
 interface = meshtastic.serial_interface.SerialInterface()
 
 while True:
