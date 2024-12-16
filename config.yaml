@@ -1,0 +1,27 @@
+model:
+  name: llama3.2:3b
+  tool_use: true
+tools:
+  - name: type_on_keyboard
+    description: Type the given string onto user keyboard
+    parameters:
+      type: object
+      properties:
+        input:
+          type: string
+          description: The given string to type
+      required:
+        - input
+  - name: ping_emergency
+    description: Call emergency service, for when help is needed, used this when user is in distress, describe the situation based on message history
+    parameters:
+      type: object
+      properties:
+        situation:
+          type: string
+          description: description of user situation for emergency service
+        location:
+          type: string
+          description: description of location of user based on their node information
+      required:
+        - situation

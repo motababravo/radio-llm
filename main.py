@@ -4,7 +4,7 @@ import meshtastic.tcp_interface
 import meshtastic.serial_interface
 from pubsub import pub
 import time
-from chat import chat_with_llm
+from model.chat_handler import chat_with_tools, chat_without_tools
 
 def get_node_summary(node_data):
     user_info = node_data.get("user", {})
@@ -24,6 +24,41 @@ def get_node_summary(node_data):
 
     return summary
 
+def send_message(to_id, full_message, interface):
+    print("Send: " + str(full_message).strip())
+
+     # Ensure the full message is sent if it's less than 200 characters
+    if len(full_message) <= 200:
+        if to_id == 'all':
+            interface.sendText(full_message, wantAck=True)
+        else:
+            interface.sendText(full_message, destinationId=to_id, wantAck=True)
+    else:
+        # Chunk the response if it exceeds 200 characters
+        chunk_size = 150
+        for i in range(0, len(full_message), chunk_size):
+            chunk = full_message[i:i + chunk_size]
+            print("------")
+            print(chunk)
+            if to_id == 'all':
+                interface.sendText(chunk, wantAck=True)
+            else:
+                interface.sendText(chunk, destinationId=to_id, wantAck=True)
+
+def process_command(user_id, node_data, message):
+    if message.startswith("/"):
+        parts = message[1:].split()
+        command = parts[0]
+        args = parts[1:]
+
+        if command == "tool":
+            sentence_arg = " ".join(args)
+            print("Chat with tool")
+            return chat_with_tools(user_id, node_data, sentence_arg)
+    else:
+        print("Chat without tool")
+        return chat_without_tools(user_id, node_data, message)
+
 def onReceive(packet, interface):  # called when a packet arrives
     try:
         sender = str(packet["fromId"])
@@ -36,32 +71,10 @@ def onReceive(packet, interface):  # called when a packet arrives
 
             print(f"Received from {sender}: {received_text}")
 
-            if packet['toId'] == '^all':
-                response = chat_with_llm("general_chat", node_data, received_text)
-            else:
-                response = chat_with_llm(str(sender), node_data, received_text)
+            response = process_command("all" if packet['toId'] == '^all' else sender, node_data, received_text)
+        
+            send_message("all" if packet['toId'] == '^all' else sender, response, interface)
 
-            full_message = response
-
-            print("Send: " + str(response).strip())
-
-            # Ensure the full message is sent if it's less than 200 characters
-            if len(full_message) <= 200:
-                if packet['toId'] == '^all':
-                    interface.sendText(full_message, wantAck=True)
-                else:
-                    interface.sendText(full_message, destinationId=sender, wantAck=True)
-            else:
-                # Chunk the response if it exceeds 200 characters
-                chunk_size = 150
-                for i in range(0, len(full_message), chunk_size):
-                    chunk = full_message[i:i + chunk_size]
-                    print("------")
-                    print(chunk)
-                    if packet['toId'] == '^all':
-                        interface.sendText(chunk, wantAck=True)
-                    else:
-                        interface.sendText(chunk, destinationId=sender, wantAck=True)
 
     except Exception as e:
         print(f"Error: {e}") # Prints error message

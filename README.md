@@ -9,7 +9,7 @@ This repository provides a platform for integrating Long Language Models (LLMs) 
 - Automatic message chunking for long responses exceeding 200 characters.
 - Maintains message history for context-aware interactions.
 - Node-specific information (e.g., battery level, location) can be included in responses.
-- Online chat support using Gemini (via google.generativeai).
+- Tool Use: Your LLM can execute tasks for you based on your prompt
 
 ## Requirements
 
@@ -17,13 +17,6 @@ This repository provides a platform for integrating Long Language Models (LLMs) 
 - Meshtastic Python library
 - Ollama LLM Python SDK
 - PubSub library
-- [Optional] Gemini Generative AI Python SDK
-
-Install dependencies using:
-
-```bash
-pip install -r requirement.txt
-```
 
 ## Setup
 
@@ -33,10 +26,53 @@ pip install -r requirement.txt
    git clone <repo_url>
    cd <repo_name>
    ```
-3. Run the script:
+3. Install dependencies:
+   ```bash
+   pip install -r requirement.txt
+   ```
+4. Run the script:
    ```bash
    python main.py
    ```
+5. To talk with the LLM, you can use normal message or "/tool your_message" to activate tool use.
+
+**Ollama performace with Tool Use on small model (llama 3.2:3b) is not exactly correct. Please test your model extensively before putting it into real use.**
+
+## Configuration
+
+- Modify the LLM model by updating the `chat` function in `chat_with_llm`.
+- Adjust chunk size or message length limits as needed.
+
+### Custom Tools
+
+To add your own tool:
+
+1. Define your tool in **model/tool_handler.py**
+2. Register your tool in **model/tool_registry.py**
+3. Describe your tool in **model/config.yaml**
+
+Please use the same name for your tool across all steps. In the future, this process will be streamlined.
+
+### Different Interface
+
+If you use BLE on your computer, please check Meshtastic documentation [here](https://meshtastic.org/docs/software/python/cli/usage/#utilizing-ble-via-the-python-cli) first. It will help you navigate the meshtastic cli to search for devices and how to authenticate the connection.
+
+```python
+# Use this if your node is connected to your local network
+interface = meshtastic.tcp_interface.TCPInterface(hostname="meshtastic.local")
+
+# Use this if your node is on BLE
+# Before using BLE client, you should connect to your device using your system bluetooth settings.
+# Read more on https://meshtastic.org/docs/software/python/cli/usage/#utilizing-ble-via-the-python-cli
+interface = meshtastic.ble_interface.BLEClient(address="Your Node BLE Identifier")
+
+# Use this if your node is connected to your computer
+interface = meshtastic.serial_interface.SerialInterface() # add param devPath if you have multiple devices connected
+```
+
+### Ollama Model
+
+If you use Ollama, please change the model name in model/config.yaml to your installed model.
 
 ## How It Works
 
@@ -63,42 +99,6 @@ pip install -r requirement.txt
   - Location (latitude, longitude, altitude)
   - Last heard time
 - This information can be appended to responses for context-aware conversations.
-
-## Configuration
-
-- Modify the LLM model by updating the `chat` function in `chat_with_llm`.
-- Adjust chunk size or message length limits as needed.
-
-### Different Interface
-
-If you use BLE on your computer, please check Meshtastic documentation [here](https://meshtastic.org/docs/software/python/cli/usage/#utilizing-ble-via-the-python-cli) first. It will help you navigate the meshtastic cli to search for devices and how to authenticate the connection.
-
-```python
-# Use this if your node is connected to your local network
-interface = meshtastic.tcp_interface.TCPInterface(hostname="meshtastic.local")
-
-# Use this if your node is on BLE
-# Before using BLE client, you should connect to your device using your system bluetooth settings.
-# Read more on https://meshtastic.org/docs/software/python/cli/usage/#utilizing-ble-via-the-python-cli
-interface = meshtastic.ble_interface.BLEClient(address="Your Node BLE Identifier")
-
-# Use this if your node is connected to your computer
-interface = meshtastic.serial_interface.SerialInterface() # add param devPath if you have multiple devices connected
-```
-
-### Ollama
-
-If you use Ollama, please change the model name in chat.py to your installed model.
-
-In my case, I'm using "llama3.2:3b".
-
-### Gemini
-
-If you use Gemini, please create a .env file and put your Gemini key inside.
-
-```
-GEMINI_API_KEY = "Your Key"
-```
 
 ## Key Components
 

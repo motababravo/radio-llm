@@ -2,4 +2,4 @@ ollama
 meshtastic
 pytap2
 python-dotenv
-google-generativeai
+yaml
