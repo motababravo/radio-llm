@@ -71,13 +71,15 @@ pip install -r requirement.txt
 
 ### Different Interface
 
+If you use BLE on your computer, please check Meshtastic documentation [here](https://meshtastic.org/docs/software/python/cli/usage/#utilizing-ble-via-the-python-cli) first. It will help you navigate the meshtastic cli to search for devices and how to authenticate the connection.
+
 ```python
 # Use this if your node is connected to your local network
 interface = meshtastic.tcp_interface.TCPInterface(hostname="meshtastic.local")
 
 # Use this if your node is on BLE
-# You can search for ble devices using BLE Scanner on your phone or using meshtastic cli
-# Find address using meshtastic cli: meshtastic --ble-scan
+# Before using BLE client, you should connect to your device using your system bluetooth settings.
+# Read more on https://meshtastic.org/docs/software/python/cli/usage/#utilizing-ble-via-the-python-cli
 interface = meshtastic.ble_interface.BLEClient(address="Your Node BLE Identifier")
 
 # Use this if your node is connected to your computer
