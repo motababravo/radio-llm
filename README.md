@@ -2,6 +2,11 @@
 
 This repository provides a platform for integrating Long Language Models (LLMs) with the Meshtastic mesh communication network. It allows users on the mesh network to interact with an LLM for concise, automated responses.
 
+Furthermore, this platform also allows users to execute tasks through LLM, such as:
+- Calling emergency services
+- Sending messages
+- Retrieving info from sensors
+
 ## Features
 
 - Bi-directional communication between Meshtastic and an LLM.
