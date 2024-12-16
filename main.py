@@ -65,9 +65,8 @@ def onReceive(packet, interface):  # called when a packet arrives
         print(f"Error: {e}") # Prints error message
 
 def onConnection(interface, topic=pub.AUTO_TOPIC): # called when we (re)connect to the radio
-    # defaults to broadcast, specify a destination ID if you wish
-    # interface.sendText("hello mesh")
-    pass
+    print("Device successfully connected!")
+    
 
 pub.subscribe(onReceive, "meshtastic.receive")
 pub.subscribe(onConnection, "meshtastic.connection.established")
@@ -76,7 +75,9 @@ pub.subscribe(onConnection, "meshtastic.connection.established")
 # interface = meshtastic.tcp_interface.TCPInterface(hostname="meshtastic.local")
 
 # Use this if your node is on BLE
-# interface = meshtastic.ble_interface.BLEClient(address="Your Node BLE Identifier")
+# Before using BLE client, you should connect to your device using your system bluetooth settings.
+# Read more on https://meshtastic.org/docs/software/python/cli/usage/#utilizing-ble-via-the-python-cli
+# interface = meshtastic.ble_interface.BLEClient(address="you can find address by using meshtastic cli: meshtastic --ble-scan")
 
 # Use this if your node is connected to your computer
 interface = meshtastic.serial_interface.SerialInterface()
