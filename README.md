@@ -7,6 +7,8 @@ Furthermore, this platform also allows users to execute tasks through LLM, such 
 - Sending messages
 - Retrieving info from sensors
 
+**Note: Currently the only supported tool is a demo for emergency service. More tools are coming soon. You can add your own tool using the guide below**
+
 ## Features
 
 - Bi-directional communication between Meshtastic and an LLM.
@@ -54,7 +56,7 @@ To add your own tool:
 
 1. Define your tool in **model/tool_handler.py**
 2. Register your tool in **model/tool_registry.py**
-3. Describe your tool in **model/config.yaml**
+3. Describe your tool in **config.yaml**
 
 Please use the same name for your tool across all steps. In the future, this process will be streamlined.
 
