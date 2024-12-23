@@ -4,7 +4,9 @@ import meshtastic.tcp_interface
 import meshtastic.serial_interface
 from pubsub import pub
 import time
-from model.chat_handler import chat_with_tools, chat_without_tools
+from session import UserSession
+
+user_sessions: dict[str, UserSession] = {}
 
 def get_node_summary(node_data):
     user_info = node_data.get("user", {})
@@ -45,24 +47,11 @@ def send_message(to_id, full_message, interface):
             else:
                 interface.sendText(chunk, destinationId=to_id, wantAck=True)
 
-def process_command(user_id, node_data, message):
-    if message.startswith("/"):
-        parts = message[1:].split()
-        command = parts[0]
-        args = parts[1:]
-
-        if command == "tool":
-            sentence_arg = " ".join(args)
-            print("Chat with tool")
-            return chat_with_tools(user_id, node_data, sentence_arg)
-    else:
-        print("Chat without tool")
-        return chat_without_tools(user_id, node_data, message)
-
 def onReceive(packet, interface):  # called when a packet arrives
     try:
-        sender = str(packet["fromId"])
-        node_data = get_node_summary(interface.nodes[sender])
+        sender = "all" if packet['toId'] == '^all' else str(packet["fromId"])
+
+        node_data = get_node_summary(interface.nodes[str(packet["fromId"])])
 
         text_message_present =  "decoded" in packet and "text" in packet["decoded"]
 
@@ -71,10 +60,13 @@ def onReceive(packet, interface):  # called when a packet arrives
 
             print(f"Received from {sender}: {received_text}")
 
-            response = process_command("all" if packet['toId'] == '^all' else sender, node_data, received_text)
-        
-            send_message("all" if packet['toId'] == '^all' else sender, response, interface)
+            if sender not in user_sessions:
+                user_sessions[sender] = UserSession(sender, node_data)
 
+            response = user_sessions[sender].chat(received_text)
+
+            if response != "":
+                send_message("all" if packet['toId'] == '^all' else sender, response, interface)
 
     except Exception as e:
         print(f"Error: {e}") # Prints error message

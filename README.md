@@ -1,8 +1,9 @@
-# LLM Platform with Meshtastic
+# LLM/Bot Platform with Meshtastic
 
-This repository provides a platform for integrating Long Language Models (LLMs) with the Meshtastic mesh communication network. It allows users on the mesh network to interact with an LLM for concise, automated responses.
+This repository provides a platform for integrating Large Language Models (LLMs) or Old-school Bots with the Meshtastic mesh communication network. It allows users on the mesh network to interact with an LLM for concise, automated responses.
 
 Furthermore, this platform also allows users to execute tasks through LLM, such as:
+
 - Calling emergency services
 - Sending messages
 - Retrieving info from sensors
@@ -17,6 +18,7 @@ Furthermore, this platform also allows users to execute tasks through LLM, such 
 - Maintains message history for context-aware interactions.
 - Node-specific information (e.g., battery level, location) can be included in responses.
 - Tool Use: Your LLM can execute tasks for you based on your prompt
+- Old-school bots features: anything you can imagine with a basic telegram or discord bots.
 
 ## Requirements
 
@@ -44,6 +46,19 @@ Furthermore, this platform also allows users to execute tasks through LLM, such 
 5. To talk with the LLM, you can use normal message or "/tool your_message" to activate tool use.
 
 **Ollama performace with Tool Use on small model (llama 3.2:3b) is not exactly correct. Please test your model extensively before putting it into real use.**
+
+## How to use
+
+Radio LLM works like a discord chat bot. You can send commands into the channel to configure chat or run commands.
+
+```
+For LLM chat features
+/enable_llm
+/disable_llm
+For echo features to test meshtastic
+/enable_echo
+/disable_echo
+```
 
 ## Configuration
 
