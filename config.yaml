@@ -1,5 +1,5 @@
 model:
-  name: llama3.2:3b
+  name: deepseek-r1:latest
   tool_use: true
 tools:
   - name: type_on_keyboard
