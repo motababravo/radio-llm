@@ -1,6 +1,6 @@
 model:
   name: deepseek-r1:latest
-  tool_use: true
+  tool_use: false
 tools:
   - name: type_on_keyboard
     description: Type the given string onto user keyboard

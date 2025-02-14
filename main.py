@@ -1,3 +1,4 @@
+import re
 import os
 import meshtastic
 import meshtastic.ble_interface
@@ -7,7 +8,7 @@ from pubsub import pub
 import time
 from session import UserSession
 
-ollama_url = os.getenv("OLLAMA_HOST", "http://win:11434"
+ollama_url = os.getenv("OLLAMA_HOST", "http://win:11434")
 
 user_sessions: dict[str, UserSession] = {}
 
@@ -82,7 +83,7 @@ pub.subscribe(onReceive, "meshtastic.receive")
 pub.subscribe(onConnection, "meshtastic.connection.established")
 
 # Use this if your node is connected to your computer
-interface = meshtastic.serial_interface.SerialInterface(devPath="/dev/ttyUSB1")
+interface = meshtastic.serial_interface.SerialInterface(devPath="/dev/ttyUSB0")
 
 while True:
     time.sleep(10000)
