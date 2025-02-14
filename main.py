@@ -7,7 +7,7 @@ from pubsub import pub
 import time
 from session import UserSession
 
-ollama_url = os.getenv("OLLAMA_HOST", "http://win:11434"
+ollama_url = os.getenv("OLLAMA_HOST", "http://win:11434")
 
 user_sessions: dict[str, UserSession] = {}
 
