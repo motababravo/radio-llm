@@ -1,3 +1,4 @@
+import re
 from session.user_state import UserState
 from model import LLMChatSession
 
@@ -8,17 +9,23 @@ class UserSession:
         self.user_data = user_data
         self.llm_chat_session = None
 
-    def chat_with_llm(self, message, tools_enabled = False):
+    def remove_think_block(self, response: str) -> str:
+        cleaned_response = re.sub(r'<think>.*?</think>', '', response, flags=re.DOTALL)
+        return cleaned_response.strip()
+
+    def chat_with_llm(self, message, tools_enabled=False):
         if self.llm_chat_session == None:
             self.llm_chat_session = LLMChatSession(self.user_id, self.user_data)
-        
+
         if tools_enabled:
-            return self.llm_chat_session.chat_with_tools(message)
-        
-        return self.llm_chat_session.chat_without_tools(message)
+            response = self.llm_chat_session.chat_with_tools(message)
+        else:
+            response = self.llm_chat_session.chat_without_tools(message)
+
+        cleaned_response = self.remove_think_block(response)
+        return cleaned_response
 
     def process_command(self, command: str, message: str) -> str:
-
         if command == "tool":
             return self.chat_with_llm(message, tools_enabled=True)
         elif command == "enable_llm":
@@ -30,7 +37,7 @@ class UserSession:
         elif command == "disable_echo" or command == "disable_llm" or command == "go_to_normal":
             self.current_state = UserState.NORMAL_CHAT
             return "Normal chat enabled."
-        
+
         return f"Command /{command} not recognized."
 
     def chat(self, message: str) -> str:
@@ -38,7 +45,7 @@ class UserSession:
 
         if len(message) == 0:
             return ""
-        
+
         if message[0] == "/":
             if " " in message:
                 command, message = message.split(" ", 1)
@@ -46,7 +53,7 @@ class UserSession:
                 command, message = message, ""
 
             return self.process_command(command[1:], message)
-        
+
         if self.current_state == UserState.ECHO:
             return message
         elif self.current_state == UserState.NEW_CHAT:

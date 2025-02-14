@@ -1,3 +1,4 @@
+import re
 import os
 import meshtastic
 import meshtastic.ble_interface
@@ -82,7 +83,7 @@ pub.subscribe(onReceive, "meshtastic.receive")
 pub.subscribe(onConnection, "meshtastic.connection.established")
 
 # Use this if your node is connected to your computer
-interface = meshtastic.serial_interface.SerialInterface(devPath="/dev/ttyUSB1")
+interface = meshtastic.serial_interface.SerialInterface(devPath="/dev/ttyUSB0")
 
 while True:
     time.sleep(10000)
