@@ -20,7 +20,7 @@ class LLMChatSession():
     """
 
     # Static Model Name
-    model_name = "llama3.2:3b"
+    model_name = "deepseek-r1:latest"
 
     # Static Model Tools
     model_tools = []
